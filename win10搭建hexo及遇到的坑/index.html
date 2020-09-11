@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.lemonneko.cn","root":"/","scheme":"Gemini","version":"8.0.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="环境准备基础环境 Node.js下载并安装，安装时注意勾选添加到环境变量选项  Git下载并安装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="win10 搭建 hexo 及遇到的坑">
+<meta property="og:url" content="https://www.lemonneko.cn/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/index.html">
+<meta property="og:site_name" content="LemonNeko的博客">
+<meta property="og:description" content="环境准备基础环境 Node.js下载并安装，安装时注意勾选添加到环境变量选项  Git下载并安装">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/BuildHexoOnWin10AndItsChallenge/01.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/BuildHexoOnWin10AndItsChallenge/02.png">
+<meta property="article:published_time" content="2018-06-05T15:00:03.000Z">
+<meta property="article:modified_time" content="2020-04-14T04:55:52.615Z">
+<meta property="article:author" content="LemonNeko">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="windows">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/BuildHexoOnWin10AndItsChallenge/01.png">
+
+
+<link rel="canonical" href="https://www.lemonneko.cn/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>win10 搭建 hexo 及遇到的坑 | LemonNeko的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?85658a99d7ed12e83a772603fd823a67";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LemonNeko的博客</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">www.lemonneko.cn</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.</span> <span class="nav-text">基础环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85hexo"><span class="nav-number">1.2.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%90%AD%E5%BB%BAgithub%E5%8D%9A%E5%AE%A2"><span class="nav-number">2.</span> <span class="nav-text">搭建 github 博客</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%BB%93%E5%BA%93"><span class="nav-number">2.1.</span> <span class="nav-text">创建仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%91%E5%AE%9A%E5%9F%9F%E5%90%8D"><span class="nav-number">2.2.</span> <span class="nav-text">绑定域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AESSH-key"><span class="nav-number">2.3.</span> <span class="nav-text">配置 SSH key</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%93%E5%BA%93%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.4.</span> <span class="nav-text">仓库设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-config-yml%E6%96%87%E4%BB%B6"><span class="nav-number">2.5.</span> <span class="nav-text">修改_config.yml 文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E5%88%B0GithubPages"><span class="nav-number">2.6.</span> <span class="nav-text">推送到 GithubPages</span></a></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LemonNeko</p>
+  <div class="site-description" itemprop="description">「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmxlbW9ubmVrb0BxcS5jb20=" title="E-Mail → mailto:lemonneko@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+
+
+
+      </section>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0xlbW9uTmVrbw==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.lemonneko.cn/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LemonNeko">
+      <meta itemprop="description" content="「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LemonNeko的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          win10 搭建 hexo 及遇到的坑
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-06-05 23:00:03" itemprop="dateCreated datePublished" datetime="2018-06-05T23:00:03+08:00">2018-06-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-04-14 12:55:52" itemprop="dateModified" datetime="2020-04-14T12:55:52+08:00">2020-04-14</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">环境搭建</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/" class="post-meta-item leancloud_visitors" data-flag-title="win10 搭建 hexo 及遇到的坑" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><h2 id="基础环境"><a href="#基础环境" class="headerlink" title="基础环境"></a>基础环境</h2><ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9ub2RlanMub3JnL3poLWNuLw==">Node.js<i class="fa fa-external-link-alt"></i></span>下载并安装，安装时注意勾选添加到<strong>环境变量</strong>选项</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXQtc2NtLmNvbS8="> Git<i class="fa fa-external-link-alt"></i></span>下载并安装</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="安装hexo"><a href="#安装hexo" class="headerlink" title="安装hexo"></a>安装 hexo</h2><ul>
+<li><p>在命令行 (建议在<font color="red"> cmd 命令提示符<strong>管理员权限</strong>下运行</font>) 运行以下命令：（在 Git Bash 下运行可能会报错） </p>
+<figure class="highlight avrasm"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-<span class="keyword">cli</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><em>此处有大坑，安装成功者请跳过此步骤</em></p>
+<ul>
+<li>如果此时安装失败，则需要重新安装 hexo，需要手动删除 <code>C:\Users\你的用户名\AppData\Roaming\npm</code> 文件夹</li>
+<li>如果报以下错误，请按照此方法安装 </li>
+</ul>
+<figure class="highlight apache"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">C</span>:\WINDOWS\system<span class="number">32</span>&gt;npm install -g hexo-cli</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated minimatch@<span class="number">2</span>.<span class="number">0</span>.<span class="number">10</span>: Please update to minimatch <span class="number">3</span>.<span class="number">0</span>.<span class="number">2</span> or higher to avoid a RegExp DoS issue</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated minimatch@<span class="number">0</span>.<span class="number">3</span>.<span class="number">0</span>: Please update to minimatch <span class="number">3</span>.<span class="number">0</span>.<span class="number">2</span> or higher to avoid a RegExp DoS issue</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated minimatch@<span class="number">1</span>.<span class="number">0</span>.<span class="number">0</span>: Please update to minimatch <span class="number">3</span>.<span class="number">0</span>.<span class="number">2</span> or higher to avoid a RegExp DoS issue</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated graceful-fs@<span class="number">3</span>.<span class="number">0</span>.<span class="number">11</span>: please upgrade to graceful-fs <span class="number">4</span> for compatibility with current and future versions of Node.js</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated node-uuid@<span class="number">1</span>.<span class="number">4</span>.<span class="number">8</span>: Use uuid module instead</span><br><span class="line"><span class="attribute">npm</span> WARN deprecated hoek@<span class="number">0</span>.<span class="number">9</span>.<span class="number">1</span>: The major version is no longer supported. Please update to <span class="number">4</span>.x or newer</span><br><span class="line"><span class="attribute">npm</span> WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@<span class="number">1</span>.<span class="number">2</span>.<span class="number">7</span> (node_modules\hexo-cli\node_modules\fsevents):</span><br><span class="line"><span class="attribute">npm</span> WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@<span class="number">1</span>.<span class="number">2</span>.<span class="number">7</span>: wanted {<span class="string">"os"</span>:<span class="string">"darwin"</span>,<span class="string">"arch"</span>:<span class="string">"any"</span>} (current: {<span class="string">"os"</span>:<span class="string">"win32"</span>,<span class="string">"arch"</span>:<span class="string">"x64"</span>})</span><br><span class="line"><span class="attribute">npm</span> ERR! path C:\Users\zd<span class="number">122</span>\AppData\Roaming\npm\node_modules\hexo-cli\node_modules\highlight.js\tools\build.js</span><br><span class="line"><span class="attribute">npm</span> ERR! code ENOENT</span><br><span class="line"><span class="attribute">npm</span> ERR! errno -<span class="number">4058</span></span><br><span class="line"><span class="attribute">npm</span> ERR! syscall chmod</span><br><span class="line"><span class="attribute">npm</span> ERR! enoent ENOENT: no such file or directory, chmod 'C:\Users\zd<span class="number">122</span>\AppData\Roaming\npm\node_modules\hexo-cli\node_modules\highlight.js\tools\build.js'</span><br><span class="line"><span class="attribute">npm</span> ERR! enoent This is related to npm not being able to find a file.</span><br><span class="line"><span class="attribute">npm</span> ERR! enoent</span><br><span class="line"><span class="attribute">npm</span> ERR! A complete log of this run can be found in:</span><br><span class="line"><span class="attribute">npm</span> ERR!     C:\Users\zd<span class="number">122</span>\AppData\Roaming\npm-cache\_logs\<span class="number">2019</span>-<span class="number">02</span>-<span class="number">25</span>T<span class="number">13</span>_<span class="number">56</span>_<span class="number">00</span>_<span class="number">339</span>Z-debug.log</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>采用淘宝 npm 镜像，<strong>之后就把所有 npm 的操作都替换成 cnpm</strong></li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> cnpm -g <span class="comment">--registry=https://registry.npm.taobao.org</span></span><br><span class="line">cnpm <span class="keyword">install</span></span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>执行 </li>
+</ul>
+<figure class="highlight cmake"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm <span class="keyword">install</span> -g hexo</span><br></pre></td></tr></tbody></table></figure>
+<p>等着一条一条被 installed，就成功装上了！</p>
+</li>
+<li><p>在硬盘上新建一个文件夹用来存放 hexo 本地文件，比如我新建在 <code>E:\hexo</code>, 然后执行初始化，会在 hexo 文件夹下生成一些文件</p>
+<figure class="highlight groovy"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">C:</span>\WINDOWS\system32&gt;<span class="attr">E:</span></span><br><span class="line"><span class="attr">E:</span>\&gt;cd /hexo</span><br><span class="line"><span class="attr">E:</span>\hexo&gt;hexo init</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>执行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>上面遇到坑的注意执行</strong></p>
+<figure class="highlight cmake"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm <span class="keyword">install</span></span><br></pre></td></tr></tbody></table></figure>
+<p>会继续下载一些文件</p>
+</li>
+<li><p>最后执行</p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> hexo server</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>按照提示在浏览器地址栏输入 <code>http://localhost:4000</code> 就可以看见效果了<br>至此，你的 hexo 博客已经搭建在本地</p>
+</li>
+</ul>
+<h1 id="搭建github博客"><a href="#搭建github博客" class="headerlink" title="搭建github博客"></a>搭建 github 博客</h1><h2 id="创建仓库"><a href="#创建仓库" class="headerlink" title="创建仓库"></a>创建仓库</h2><p>  新建一个名为 <code>&lt;你的用户名&gt;.github.io</code> 的仓库，比如你的用户名为 <strong>admin</strong>，则你新建的仓库名应为 <code>admin.github.io</code>，<strong>请注意必须使用你自己的用户名</strong>，将来访问你的网站就直接是 <code>https://admin.github.io</code> 了</p>
+<h2 id="绑定域名"><a href="#绑定域名" class="headerlink" title="绑定域名"></a>绑定域名</h2><ul>
+<li>不绑定域名也是可以的，可以直接使用 <code>xxx.github.io</code> 来访问</li>
+<li>注册域名可以去<span class="exturl" data-url="aHR0cHM6Ly93d3cuYWxpeXVuLmNvbS8=">阿里云<i class="fa fa-external-link-alt"></i></span>或者<span class="exturl" data-url="aHR0cHM6Ly9jbG91ZC50ZW5jZW50LmNvbS8=">腾讯云<i class="fa fa-external-link-alt"></i></span></li>
+<li>推荐使用 CNAME 方式解析，主机记录选 <code>www</code>, 线路默认，记录值填 <code>&lt;你的用户名&gt;.github.io</code></li>
+</ul>
+<h2 id="配置SSH-key"><a href="#配置SSH-key" class="headerlink" title="配置SSH key"></a>配置 SSH key</h2><ul>
+<li><p>用 Git Bash 执行以下命令：</p>
+<figure class="highlight jboss-cli"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">cd</span> ~<span class="string">/.ssh</span> <span class="comment">#检查本机已存在的ssh密钥</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果提示：No such file or directory 说明你是第一次使用 git</p>
+</li>
+<li><p>则执行以下命令</p>
+<figure class="highlight 1c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"邮件地址"</span> <span class="meta">#邮件地址为你登陆github的邮件地址</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后执行回车 3 次，会生成一个文件，在 <code>C:\Users\你的用户名\.ssh</code> 文件夹下找到 <code>id_rsa.pub</code> 文件，用记事本打开，全部复制，打开你的 github 主页，<code>Settings-&gt;SSH and GPG keys-&gt;New SSH key</code><br><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/BuildHexoOnWin10AndItsChallenge/01.png" alt="image"><br>将复制的内容粘贴在 key 那里，title 可以随便填</p>
+</li>
+</ul>
+<ul>
+<li><p>测试是否添加成功，在命令行（Git Bash）输入以下命令，返回 <code>You’ve successfully authenticated</code> 即成功</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ssh</span> -T git<span class="variable">@github</span>.com <span class="comment"># 注意邮箱地址不用改</span></span><br></pre></td></tr></tbody></table></figure>
+
+</li>
+</ul>
+<h2 id="仓库设置"><a href="#仓库设置" class="headerlink" title="仓库设置"></a>仓库设置</h2><ul>
+<li>打开博客仓库设置：<code>https://github.com/&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io/settings</code></li>
+<li>在 Custom domain 下，填写自定义域名，点击 <code>save</code></li>
+<li>在站点目录的 source 文件夹下，创建并打开 CNAME.txt，写入你的域名并保存，并重命名为 CNAME（去掉后缀名）</li>
+</ul>
+<h2 id="修改-config-yml文件"><a href="#修改-config-yml文件" class="headerlink" title="修改_config.yml文件"></a>修改<code>_config.yml</code> 文件</h2><ul>
+<li><p>（存放在 Hexo 初始化文件的路径下）拉到末尾，补全以下内容：</p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line"># Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line"> type: git</span><br><span class="line"> repo: git@github.com:<span class="tag">&lt;<span class="name">Github账号名称</span>&gt;</span>/<span class="tag">&lt;<span class="name">Github账号名称</span>&gt;</span>.github.io.git</span><br><span class="line"> branch: master</span><br></pre></td></tr></tbody></table></figure>
+
+<p> <strong>请一定注意 type, repo, branch 的冒号后面都有一个空格，否则等会执行 <code>hexo d</code> 没有反应直接跳过</strong><br> <img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/BuildHexoOnWin10AndItsChallenge/02.png" alt="image"></p>
+</li>
+</ul>
+<h2 id="推送到GithubPages"><a href="#推送到GithubPages" class="headerlink" title="推送到GithubPages"></a>推送到 GithubPages</h2><ul>
+<li><p>在命令行（Git Bash）一次输入以下命令，返回 <code>INFO Deploy done: git</code> 即推送成功</p>
+<figure class="highlight elixir"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$ </span>hexo g</span><br><span class="line"><span class="variable">$ </span>hexo d</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>如果执行 <code>hexo d</code> 没反应直接跳过一定记得返回上一步检查</strong></p>
+</li>
+<li><p>输入你绑定的域名或者 &lt;你的用户名&gt;.github.io 访问，查看效果，域名可能需要 5-10 分钟才能成功访问</p>
+</li>
+<li><p>如果仍不能解决，则 debug 一下</p>
+<figure class="highlight nginx"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">hexo</span> d --<span class="literal">debug</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>若提示 <code>ERROR Deployer not found: git</code>, 使用以下命令解决</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="keyword">install</span> <span class="comment">--save hexo-deployer-git</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>前面碰到 <code>npm</code> 不能安装的请换成 <code>cnpm</code> 执行</strong>  </p>
+<p><em>现在博客的搭建任务就完成啦！</em></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+              <a href="/tags/windows/" rel="tag"># windows</a>
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E8%A7%A3%E5%86%B3hexo%E5%8D%9A%E5%AE%A2%E2%80%9CCannot-GET-tags%E6%88%96categories%E2%80%9D%E5%8F%8A%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8D%9A%E5%AE%A2%E6%A8%A1%E6%9D%BF/" rel="next" title="解决 hexo 博客 “Cannot GET/tags 或 categories“及自定义博客模板">
+                  解决 hexo 博客 “Cannot GET/tags 或 categories“及自定义博客模板 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-edit"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LemonNeko</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","app_key":"Q52OfO4yuem0JRQtDjX1Cf2z","server_url":"server.lemonneko.cn","security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+      <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/win10%E6%90%AD%E5%BB%BAhexo%E5%8F%8A%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/",
+    }, {"enable":true,"appId":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","appKey":"Q52OfO4yuem0JRQtDjX1Cf2z","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.lemonneko.cn","root":"/","scheme":"Gemini","version":"8.0.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="工作流 新建一个仓库之后，当前目录就成为了工作区，工作区下有一个隐藏目录.git, 它属于 Git 的版本库  Git 版本库有一个成为 Stage 的暂存区以及最后的 History 版本库，History 存储所有分支信息，使用一个 HEAD 指针指向当前分支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 工具及其使用">
+<meta property="og:url" content="https://www.lemonneko.cn/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="LemonNeko的博客">
+<meta property="og:description" content="工作流 新建一个仓库之后，当前目录就成为了工作区，工作区下有一个隐藏目录.git, 它属于 Git 的版本库  Git 版本库有一个成为 Stage 的暂存区以及最后的 History 版本库，History 存储所有分支信息，使用一个 HEAD 指针指向当前分支">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/flow.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/commandForWorkArea1.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/commandForWorkArea2.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/GitCommand.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/Repository.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/master.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/dev.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/dev2.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/maser_dev.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/delDev.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/no-ff.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/team.png">
+<meta property="article:published_time" content="2019-08-29T13:58:09.000Z">
+<meta property="article:modified_time" content="2020-04-14T04:55:02.077Z">
+<meta property="article:author" content="LemonNeko">
+<meta property="article:tag" content="工具">
+<meta property="article:tag" content="Git">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/flow.png">
+
+
+<link rel="canonical" href="https://www.lemonneko.cn/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Git 工具及其使用 | LemonNeko的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?85658a99d7ed12e83a772603fd823a67";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LemonNeko的博客</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">www.lemonneko.cn</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">1.</span> <span class="nav-text">工作流</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git%E5%91%BD%E4%BB%A4"><span class="nav-number">2.</span> <span class="nav-text">Git 命令</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%89%88%E6%9C%AC%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">创建版本库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%8A%E6%96%87%E4%BB%B6%E6%B7%BB%E5%8A%A0%E5%88%B0%E7%89%88%E6%9C%AC%E5%BA%93"><span class="nav-number">3.1.</span> <span class="nav-text">把文件添加到版本库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">3.2.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%B6%E5%85%89%E7%A9%BF%E6%A2%AD%E6%9C%BA"><span class="nav-number">4.</span> <span class="nav-text">时光穿梭机</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">4.1.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%9B%9E%E9%80%80"><span class="nav-number">4.2.</span> <span class="nav-text">版本回退</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-2"><span class="nav-number">4.2.1.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%92%8C%E6%9A%82%E5%AD%98%E5%8C%BA"><span class="nav-number">4.3.</span> <span class="nav-text">工作区和暂存区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%A1%E7%90%86%E4%BF%AE%E6%94%B9"><span class="nav-number">4.4.</span> <span class="nav-text">管理修改</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%92%A4%E9%94%80%E4%BF%AE%E6%94%B9"><span class="nav-number">4.5.</span> <span class="nav-text">撤销修改</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-3"><span class="nav-number">4.5.1.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-4"><span class="nav-number">4.5.2.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">5.</span> <span class="nav-text">远程仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%BF%9C%E7%A8%8B%E5%BA%93"><span class="nav-number">5.1.</span> <span class="nav-text">添加远程库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-5"><span class="nav-number">5.1.1.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8E%E8%BF%9C%E7%A8%8B%E5%BA%93%E5%85%8B%E9%9A%86"><span class="nav-number">5.2.</span> <span class="nav-text">从远程库克隆</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86"><span class="nav-number">6.</span> <span class="nav-text">分支管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E4%B8%8E%E5%90%88%E5%B9%B6%E5%88%86%E6%94%AF"><span class="nav-number">6.1.</span> <span class="nav-text">创建与合并分支</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E6%88%98"><span class="nav-number">6.1.1.</span> <span class="nav-text">实战</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#switch"><span class="nav-number">6.1.2.</span> <span class="nav-text">switch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-6"><span class="nav-number">6.1.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%86%B2%E7%AA%81"><span class="nav-number">6.2.</span> <span class="nav-text">解决冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86%E7%AD%96%E7%95%A5"><span class="nav-number">6.3.</span> <span class="nav-text">分支管理策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%94%AF%E7%AD%96%E7%95%A5"><span class="nav-number">6.3.1.</span> <span class="nav-text">分支策略</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LemonNeko</p>
+  <div class="site-description" itemprop="description">「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmxlbW9ubmVrb0BxcS5jb20=" title="E-Mail → mailto:lemonneko@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+
+
+
+      </section>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0xlbW9uTmVrbw==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.lemonneko.cn/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LemonNeko">
+      <meta itemprop="description" content="「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LemonNeko的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Git 工具及其使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-08-29 21:58:09" itemprop="dateCreated datePublished" datetime="2019-08-29T21:58:09+08:00">2019-08-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-04-14 12:55:02" itemprop="dateModified" datetime="2020-04-14T12:55:02+08:00">2020-04-14</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/" class="post-meta-item leancloud_visitors" data-flag-title="Git 工具及其使用" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="工作流"><a href="#工作流" class="headerlink" title="工作流"></a>工作流</h1><ul>
+<li>新建一个仓库之后，<strong>当前目录</strong>就成为了工作区，工作区下有一个隐藏目录<code>.git</code>, 它属于 Git 的版本库</li>
+<li> Git 版本库有一个成为 Stage 的暂存区以及最后的 History 版本库，<strong>History 存储所有分支信息</strong>，使用一个 HEAD 指针指向当前分支</li>
+</ul>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/flow.png" alt="工作流"></p>
+<a id="more"></a>
+
+<ul>
+<li> git add files` 把文件的修改添加到暂存区</li>
+<li><code>git commit</code> 把暂存区的修改提交到当前分支，提交之后暂存区就被清空了</li>
+<li><code>git reset -- files</code> 使用当前分支上的修改覆盖暂存区，用来撤销最后一次 <code>git add files</code></li>
+<li><code>git checkout --files</code> 使用暂存区的修改覆盖工作目录，用来撤销本地修改</li>
+</ul>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/commandForWorkArea1.png" alt="工作区命令作用1"></p>
+<p>可以跳过暂存区域直接从分支中取出修改，或者直接提交修改到分支中</p>
+<ul>
+<li><code>git commit -a</code> 直接把所有文件的修改添加到暂存区然后执行提交</li>
+<li><code>git checkout HEAD -- files</code> 取出最后一次修改，可以用来进行回滚操作</li>
+</ul>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/commandForWorkArea2.png" alt="工作区命令作用2"></p>
+<h1 id="Git命令"><a href="#Git命令" class="headerlink" title="Git命令"></a>Git 命令</h1><p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/GitCommand.jpg" alt="Git命令"></p>
+<h1 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h1><ol>
+<li><p>选择合适的地方，新建一个空目录</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir learngit</span><br><span class="line">$ <span class="built_in">cd</span> learngit</span><br><span class="line">$ <span class="built_in">pwd</span></span><br><span class="line">/Users/michael/learngit</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>pwd</code> 命令用于显示当前目录</p>
+</li>
+<li><p>通过 <code>git init</code> 命令把这个目录变成 Git 可以管理的仓库</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git init</span><br><span class="line">Initialized empty Git repository <span class="keyword">in</span> /Users/michael/learngit/.git/</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时 Git 仓库创建好了，而且告诉你是一个空仓库 （empty Git repository） ，可以发现当前目录下多了一个 <code>.git</code> 的目录，目录<strong>默认隐藏</strong>，用 <code>ls -ah</code> 命令可以看见</p>
+</li>
+</ol>
+<h2 id="把文件添加到版本库"><a href="#把文件添加到版本库" class="headerlink" title="把文件添加到版本库"></a>把文件添加到版本库</h2><ol>
+<li><p>编写一个 <code>readme.md</code> 文件，内容如下：</p>
+<figure class="highlight mercury"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Git <span class="keyword">is</span> a version control system.</span><br><span class="line">Git <span class="keyword">is</span> free software.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>一定要放在 <code>learngit</code> 目录下（或其子目录下），因为这是一个 Git 仓库</p>
+</li>
+<li><p>用命令 <code>git add</code> 告诉 Git ，把文件添加到仓库</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git add readme.md</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>用命令 <code>git commit</code> 告诉 Git ，把文件提交到仓库</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m <span class="string">"wrote a readme file"</span></span><br><span class="line">[master (root-commit) 6acee61] wrote a readme file</span><br><span class="line"> 1 file changed, 2 insertions(+)</span><br><span class="line"> create mode 100644 readme.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>-m</code> 后面输入的是本次提交的说明</p>
+</li>
+</ol>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>初始化一个 Git 仓库，使用 <code>git init</code> 命令</li>
+<li>添加文件档 Git 仓库，分两步：<ol>
+<li>使用命令 <code>git add &lt;file&gt;</code> ，注意，可反复多次使用，添加多个文件</li>
+<li>使用命令 <code>git commit -m &lt;message&gt;</code> ，完成</li>
+</ol>
+</li>
+</ul>
+<h1 id="时光穿梭机"><a href="#时光穿梭机" class="headerlink" title="时光穿梭机"></a>时光穿梭机</h1><p>运行 <code>git status</code> 命令看看结果：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes not staged <span class="keyword">for</span> commit:</span><br><span class="line">  (use <span class="string">"git add &lt;file&gt;..."</span> to update what will be committed)</span><br><span class="line">  (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span><br><span class="line"></span><br><span class="line">        modified:   readme.md</span><br><span class="line"></span><br><span class="line">no changes added to commit (use <span class="string">"git add"</span> and/or <span class="string">"git commit -a"</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git status</code> 命令可以让我们时刻掌握仓库的当前状态，上面命令告诉我们， <code>readme.md</code> 被修改过，但还没有准备提交修改</p>
+<p>用 <code>git diff</code> 命令查看具体修改了什么内容</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ git diff readme.md</span><br><span class="line">diff --git a/readme.md b/readme.md</span><br><span class="line">index 46d49bf..013b5bc 100644</span><br><span class="line">--- a/readme.md</span><br><span class="line">+++ b/readme.md</span><br><span class="line">@@ -1,2 +1,2 @@</span><br><span class="line">-Git is a version control system.</span><br><span class="line">+Git is a distributed version control system.</span><br><span class="line">Git is free software.</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>提交修改</strong>和<strong>提交新文件</strong>是一样的两步：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git add readme.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在第二步 <code>git commit</code> 之前，我们再运行 <code>git status</code> 看看当前仓库的状态</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes to be committed:</span><br><span class="line">  (use <span class="string">"git reset HEAD &lt;file&gt;..."</span> to unstage)</span><br><span class="line"></span><br><span class="line">        modified:   readme.md</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git status</code> 告诉我们，将要被提交的修改包括 <code>readme.md</code> , 下一步，就可以放心地提交了</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git commit -m <span class="string">'add distributed'</span></span><br><span class="line">[master 9d1e9c7] add distributed</span><br><span class="line"> 1 file changed, 1 insertions(+), 1 deletions(-)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>提交后，我们再用 <code>git status</code> 命令看看仓库的当前状态</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">nothing to commit, working tree clean</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>要随时掌握工作区的状态，使用 <code>git status</code> 命令</li>
+<li>如果 <code>git status</code> 告诉哦你有文件被修改过，用 <code>git diff</code> 可以查看修改内容</li>
+</ul>
+<h2 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h2><p>再次修改 readme.md 文件</p>
+<figure class="highlight livecodeserver"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Git is <span class="keyword">a</span> distributed <span class="built_in">version</span> control <span class="keyword">system</span>.</span><br><span class="line">Git is free software distributed under <span class="keyword">the</span> GPL.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后尝试提交</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git add readme.txt</span><br><span class="line">$ git commit -m <span class="string">"append GPL"</span></span><br><span class="line">[master 01ed3b5] append GPL</span><br><span class="line"> 1 file changed, 1 insertion(+), 1 deletion(-)</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git log</code> 命令可以显示从最近到最远提交的日志。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">log</span></span><br><span class="line">commit 01ed3b53600c6d9ca863533bef51968c9173c12e (HEAD -&gt; master)</span><br><span class="line">Author: LemonNeko &lt;1224914724@qq.com&gt;</span><br><span class="line">Date:   Sat Aug 31 15:39:40 2019 +0800</span><br><span class="line"></span><br><span class="line">    append GPL</span><br><span class="line"></span><br><span class="line">commit 9d1e9c75a7d555566f5827eff04b5af2910a821a</span><br><span class="line">Author: LemonNeko &lt;1224914724@qq.com&gt;</span><br><span class="line">Date:   Sat Aug 31 15:33:29 2019 +0800</span><br><span class="line"></span><br><span class="line">    add distributed</span><br><span class="line"></span><br><span class="line">commit 6acee61eb4a58f9d921ea2fc8e0217af42231c2b</span><br><span class="line">Author: LemonNeko &lt;1224914724@qq.com&gt;</span><br><span class="line">Date:   Sat Aug 31 14:52:03 2019 +0800</span><br><span class="line"></span><br><span class="line">    wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<p>我们可以看到 3 次提交，如果嫌输出信息太多，可以加上 <code>--pretty=oneline</code> 参数</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">log</span> --pretty=oneline</span><br><span class="line">01ed3b53600c6d9ca863533bef51968c9173c12e (HEAD -&gt; master) append GPL</span><br><span class="line">9d1e9c75a7d555566f5827eff04b5af2910a821a add distributed</span><br><span class="line">6acee61eb4a58f9d921ea2fc8e0217af42231c2b wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>回退到上一个版本， Git 首先要知道当前版本是哪个版本，在 Git 中，用 <code>HEAD</code> 表示当前版本，也就是最新提交的 <code>01ed3b...</code> ，上一个版本就是 <code>HEAD^</code> ，上上一个版本就是 <code>HEAD^^</code> ，若是上 100 个版本写成 <code>HEAD~100</code></p>
+<p>现在把当前版本 <code>append GPL</code> 回退到上一个版本 <code>add distributed</code> , 可以使用 <code>git reset</code> 命令：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git reset --hard HEAD^</span><br><span class="line">HEAD is now at 9d1e9c7 add distributed</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看 readme.md 的内容</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cat readme.md</span><br><span class="line">Git is a distributed version control system.</span><br><span class="line">Git is free software.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>已经被还原。此时再用 <code>git log</code> 查看现在版本库的状态</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">log</span></span><br><span class="line">commit 9d1e9c75a7d555566f5827eff04b5af2910a821a (HEAD -&gt; master)</span><br><span class="line">Author: LemonNeko &lt;1224914724@qq.com&gt;</span><br><span class="line">Date:   Sat Aug 31 15:33:29 2019 +0800</span><br><span class="line"></span><br><span class="line">    add distributed</span><br><span class="line"></span><br><span class="line">commit 6acee61eb4a58f9d921ea2fc8e0217af42231c2b</span><br><span class="line">Author: LemonNeko &lt;1224914724@qq.com&gt;</span><br><span class="line">Date:   Sat Aug 31 14:52:03 2019 +0800</span><br><span class="line"></span><br><span class="line">    wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<p>最新的版本 <code>append GPL</code> 已经看不到了，在命令行窗口没被关闭的情况下可以往上找，找到 <code>append GPL</code> 的 <code>commit id</code> , 于是可以指定回到未来的某个版本</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git reset --hard 01ed3</span><br><span class="line">HEAD is now at 01ed3b5 append GPL</span><br></pre></td></tr></tbody></table></figure>
+
+<p><strong>版本号没必要写全，写前几位就可以了</strong></p>
+<hr>
+<p>Git 在内部有个指向当前版本的 <code>HEAD</code> 指针，当回退版本的时候， Git 仅仅是把 <code>HEAD</code> 从指向 <code>append GPL</code> </p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌────┐</span><br><span class="line">│HEAD│</span><br><span class="line">└────┘</span><br><span class="line">   │</span><br><span class="line">   └──&gt; ○ append GPL</span><br><span class="line">        │</span><br><span class="line">        ○ add distributed</span><br><span class="line">        │</span><br><span class="line">        ○ wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<p>改为指向 <code>add distributed</code>：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">┌────┐</span><br><span class="line">│HEAD│</span><br><span class="line">└────┘</span><br><span class="line">   │</span><br><span class="line">   │    ○ append GPL</span><br><span class="line">   │    │</span><br><span class="line">   └──&gt; ○ add distributed</span><br><span class="line">        │</span><br><span class="line">        ○ wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<hr>
+<p>Git 提供了命令 <code>git reflog</code> 用来记录你的每一次命令</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ git reflog</span><br><span class="line">01ed3b5 (HEAD -&gt; master) HEAD@{0}: reset: moving to 01ed3</span><br><span class="line">9d1e9c7 HEAD@{1}: reset: moving to HEAD^</span><br><span class="line">01ed3b5 (HEAD -&gt; master) HEAD@{2}: commit: append GPL</span><br><span class="line">9d1e9c7 HEAD@{3}: commit: add distributed</span><br><span class="line">6acee61 HEAD@{4}: commit (initial): wrote a readme file</span><br></pre></td></tr></tbody></table></figure>
+
+<p>根据 <code>commit id</code> 可以回到你需要的版本</p>
+<h3 id="小结-2"><a href="#小结-2" class="headerlink" title="小结"></a>小结</h3><ul>
+<li><code>HEAD</code> 指向的版本就是当前版本，使用命令 <code>git reset --hard commit_id</code> 切换</li>
+<li>回退前，用 <code>git log</code> 查看提交历史，以便确定需要回退到哪个版本</li>
+<li>要重返未来，用 <code>git reflog</code> 查看命令历史，以便确定要回到未来的哪个版本</li>
+</ul>
+<h2 id="工作区和暂存区"><a href="#工作区和暂存区" class="headerlink" title="工作区和暂存区"></a>工作区和暂存区</h2><ul>
+<li><p><strong>工作区 (Working Directory)</strong></p>
+<p>就是在电脑里能看到的目录，比如 <code>learngit</code> 文件夹就是一个工作区</p>
+</li>
+<li><p><strong>版本库 (Repository)</strong></p>
+<p>工作区有一个隐藏目录 <code>.git</code> , 这个不算工作区，而是 Git 的版本库</p>
+<p>Git 版本库里存了很多东西，其中最重要的就是称为 <strong>stage</strong> 的暂存区，还有 Git 为我们创建的第一个分支 <code>master</code> ，以及指向 <code>master</code> 的一个指针叫 <code>HEAD</code></p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/Repository.jpg" alt="版本库"></p>
+<p>存文件分两步：</p>
+<ul>
+<li>用 <code>git add</code> 把文件添加进去，实际上就是把文件修改添加到暂存区</li>
+<li>用 <code>git commit</code> 提交更改，实际上就是把暂存区的所有内容提交到当前分支</li>
+</ul>
+</li>
+</ul>
+<h2 id="管理修改"><a href="#管理修改" class="headerlink" title="管理修改"></a>管理修改</h2><p>Git 管理的是修改，用 <code>git add</code> 命令后，在工作区的修改被放入暂存区，准备提交，如果再次修改但没有放入暂存区， <code>git commit</code> 只负责把暂存区的修改提交了</p>
+<blockquote>
+<p>怎么提交第二次修改？</p>
+</blockquote>
+<p>可以继续 <code>git add</code> 再 <code>git commit</code> , 也可以</p>
+<p>第一次修改 -&gt; <code>git add</code> -&gt; 第二次修改 -&gt; <code>git add</code> -&gt; <code>git commit</code></p>
+<h2 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h2><p>命令 <code>git checkout -- file</code> 可以丢弃工作区的修改</p>
+<p>有两种情况：</p>
+<ol>
+<li>文件自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态</li>
+<li>一件已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态</li>
+</ol>
+<p>总之，就是让这个文件回到最后一次 <code>git commit</code> 或 <code>git add</code> 时的状态</p>
+<p><strong><code>git checkout -- file</code> 命令中 <code>--</code> 很重要，没有 <code>--</code> ，就变成了 “切换到另一个分支” 的命令</strong></p>
+<p>撤销暂存区的修改，重新放回工作区</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD &lt;file&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git reset</code> 命令可以回退版本，也可以把暂存区的修改回退到工作区，当我们用 <code>HEAD</code> 时，表示最新的版本</p>
+<h3 id="小结-3"><a href="#小结-3" class="headerlink" title="小结"></a>小结</h3><ul>
+<li><p>场景一：当乱了工作区某个文件的内容，想直接丢弃工作区的修改时，用命令</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -- file</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>不但乱了工作区某个文件的内容，还添加到了暂存区，想丢弃修改，分两步：</p>
+<ol>
+<li><pre><code class="bash">$ git reset HEAD &lt;file&gt;
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">     回退到场景一</span><br><span class="line"></span><br><span class="line">  2. 按场景一操作</span><br><span class="line"></span><br><span class="line">+ 已经提交了不合适的修改到版本库时，想要撤销本次提交，参考版本回退场景一，不过前提是没有推送到远程库</span><br><span class="line"></span><br><span class="line"><span class="comment">## 删除文件</span></span><br><span class="line"></span><br><span class="line">删除文件也是一个修改操作</span><br><span class="line"></span><br><span class="line">若先添加一个新文件 `test.txt` 到 Git 并提交，再删除</span><br><span class="line"></span><br><span class="line">```bash</span><br><span class="line">$ git add test.txt</span><br><span class="line">$ git <span class="keyword">commit</span> -m <span class="string">"add test.txt"</span></span><br><span class="line">[<span class="keyword">master</span> af68739] <span class="keyword">add</span> test.txt</span><br><span class="line"> <span class="number">1</span> <span class="keyword">file</span> <span class="keyword">changed</span>, <span class="number">1</span> insertion(+)</span><br><span class="line"> <span class="keyword">create</span> <span class="keyword">mode</span> <span class="number">100644</span> test.txt</span><br></pre></td></tr></tbody></table></figure>
+</code></pre>
+</li>
+</ol>
+</li>
+</ul>
+<p>通常在文件管理器中把没用的文件删除或者用 <code>rm</code> 命令删除</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ rm test.txt</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时，工作区和版本库不一致，用 <code>git status</code> 命令可以查看哪些文件被删除了</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ git status</span><br><span class="line">On branch master</span><br><span class="line">Changes not staged <span class="keyword">for</span> commit:</span><br><span class="line">  (use <span class="string">"git add/rm &lt;file&gt;..."</span> to update what will be committed)</span><br><span class="line">  (use <span class="string">"git checkout -- &lt;file&gt;..."</span> to discard changes <span class="keyword">in</span> working directory)</span><br><span class="line"></span><br><span class="line">        deleted:    test.txt</span><br><span class="line"></span><br><span class="line">no changes added to commit (use <span class="string">"git add"</span> and/or <span class="string">"git commit -a"</span>)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>现有两种选择：</p>
+<ol>
+<li><p>确定要从版本库中删除该文件，就用 <code>git rm</code> 命令删掉，并且 <code>git commit</code></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git rm test.txt</span><br><span class="line">rm <span class="string">'test.txt'</span></span><br><span class="line"></span><br><span class="line">$ git commit -m <span class="string">"remove test.txt"</span></span><br><span class="line">[master 3ea9091] remove test.txt</span><br><span class="line"> 1 file changed, 1 deletion(-)</span><br><span class="line"> delete mode 100644 test.txt</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>删错了，版本库里还存在，可以把误删的文件恢复到最新版本</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -- test.txt</span><br></pre></td></tr></tbody></table></figure>
+
+</li>
+</ol>
+<p><strong><code>git checkout</code> 其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以 “一键还原”</strong></p>
+<h3 id="小结-4"><a href="#小结-4" class="headerlink" title="小结"></a>小结</h3><p>用 <code>git rm</code> 删除版本库中的文件。如果一个文件已经被提交到版本库，永远不用担心误删，但只能恢复文件到最新版本，会丢失<strong>最近一次提交后修改的内容</strong></p>
+<h1 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h1><p>创建 SSH Key：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span></span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="添加远程库"><a href="#添加远程库" class="headerlink" title="添加远程库"></a>添加远程库</h2><ul>
+<li><p>首先在 github 创建一个仓库</p>
+<p>在本地工作区目录下，运行命令：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@github.com:LemonNeko/leanrgit.git</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中 <code>origin</code> 是远程库的名字，这是 Git 默认的叫法，也可以改成别的名字，但是 <code>origin</code> 这个名字一看就知道是远程库，<code>LemonNeko</code> 是自己的 Github 账户名</p>
+</li>
+<li><p>把本体库的所有内容推送到远程库上</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ git push -u origin master</span><br><span class="line">Enumerating objects: 13, <span class="keyword">done</span>.</span><br><span class="line">Counting objects: 100% (13/13), <span class="keyword">done</span>.</span><br><span class="line">Delta compression using up to 4 threads</span><br><span class="line">Compressing objects: 100% (9/9), <span class="keyword">done</span>.</span><br><span class="line">Writing objects: 100% (13/13), 1.08 KiB | 221.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Total 13 (delta 2), reused 0 (delta 0)</span><br><span class="line">remote: Resolving deltas: 100% (2/2), <span class="keyword">done</span>.</span><br><span class="line">To github.com:LemonNeko/leanrgit.git</span><br><span class="line"> * [new branch]      master -&gt; master</span><br><span class="line">Branch <span class="string">'master'</span> <span class="built_in">set</span> up to track remote branch <span class="string">'master'</span> from <span class="string">'origin'</span>.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>把本地库的内容推送到远程，用 <code>git push</code> 命令，实际上是把骑当千分支 <code>master</code> 推送到远程</p>
+</li>
+</ul>
+<p>由于远程库是空的，第一次推送 <code>master</code> 分支时，加上 <code>-u</code> 参数， Git 不但会把本地 <code>master</code> 分支推送的远程新的 <code>master </code>分支，还会把本地的 <code>master</code> 分支和远程的 <code>master</code> 分支关联起来，在以后的推送或者拉取时就可以简化命令。</p>
+<p>从现在起，只要本地作了提交，就可以通过命令：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push origin master</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="小结-5"><a href="#小结-5" class="headerlink" title="小结"></a>小结</h3><ul>
+<li><p>要关联一个远程库，使用命令 </p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin git@server-name:path/repo-name.git</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>关联后，使用命令</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push -u origin master</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第一次推送 master 分支的所有内容</p>
+</li>
+<li><p>此后，每次本地提交，就可以使用命令 </p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git push origin master</span><br></pre></td></tr></tbody></table></figure>
+
+<p>推送最新修改</p>
+</li>
+</ul>
+<h2 id="从远程库克隆"><a href="#从远程库克隆" class="headerlink" title="从远程库克隆"></a>从远程库克隆</h2><p>假设从零开发，最好的方式是先创建远程库，然后，从远程库克隆</p>
+<p>用命令 <code>git clone</code> 克隆一个本地库</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@github.com:Lemonneko/learngit.git</span><br></pre></td></tr></tbody></table></figure>
+
+<h1 id="分支管理"><a href="#分支管理" class="headerlink" title="分支管理"></a>分支管理</h1><h2 id="创建与合并分支"><a href="#创建与合并分支" class="headerlink" title="创建与合并分支"></a>创建与合并分支</h2><p><code>HEAD</code> 严格来说不是指向提交，而是指向 <code>master</code> , <code>master</code> 才是指向提交的，所以， <code>HEAD</code> 指向的就是当前分支</p>
+<p>一开始， <code>master</code> 是一条线， Git 用 <code>master</code> 指向最新的提交，再用 <code>HEAD</code> 指向 <code>master</code> , 就能确定当前分支，以及当前分支的提交点</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/master.png" alt="master"></p>
+<p>每次提交， <code>master</code> 分支都会向前移动一步，这样，随着你不断提交， <code>master</code> 分支的线也越来越长。</p>
+<p>当我们创建新的分支，例如 <code>dev</code> 时，Git 新建了一个指针叫 <code>dev</code> ，指向 <code>master</code> 相同的提交，再把 <code>HEAD</code> 指向 <code>dev</code> ，就表示当前分支在 <code>dev</code> 上：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/dev.png" alt="dev"></p>
+<p>Git 创建一个分支很快，因为除了增加一个 <code>dev</code> 指针，改改 <code>HEAD</code> 的指向，工作区的文件都没有任何变化！</p>
+<p>不过，从现在开始，对工作区的修改和提交就是针对 <code>dev</code> 分支了，比如新提交一次后，<code>dev</code> 指针往前移动一步，而 <code>master</code> 指针不变：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/dev2.png" alt="dev"></p>
+<p>假如我们在 <code>dev</code> 上的工作完成了，就可以把 <code>dev</code> 合并到 <code>master</code> 上。Git 怎么合并呢？最简单的方法，就是直接把 <code>master</code> 指向 <code>dev</code> 的当前提交，就完成了合并：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/maser_dev.png" alt="master_dev"></p>
+<p>所以 Git 合并分支也很快！就改改指针，工作区内容也不变！</p>
+<p>合并完分支后，甚至可以删除 <code>dev</code> 分支。删除 <code>dev</code> 分支就是把 <code>dev</code> 指针给删掉，删掉后，我们就剩下了一条 <code>master</code> 分支：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/delDev.png" alt="delDev"></p>
+<h3 id="实战"><a href="#实战" class="headerlink" title="实战"></a>实战</h3><p>创建 <code>dev</code> 分支，然后切换到 <code>dev</code> 分支：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b dev</span><br><span class="line">Switched to a new branch <span class="string">'dev'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git checkout</code> 命令加上 <code>-b</code> 参数表示创建并切换，相当于以下两条命令：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git branch dev</span><br><span class="line">$ git checkout dev</span><br><span class="line">Switched to branch <span class="string">'dev'</span></span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后，用 <code>git branch</code> 命令查看当前分支：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git branch</span><br><span class="line">* dev</span><br><span class="line">  master</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git branch</code> 命令会列出所有分支，当前分支前面会标一个 <code>*</code> 号</p>
+<p>然后可以在 <code>dev</code> 分支上正常提交</p>
+<p>将 <code>dev</code> 分支的工作成果合并到 <code>master</code> 分支上用</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git merge dev</span><br></pre></td></tr></tbody></table></figure>
+
+<p><code>git merge</code> 命令用于合并指定分支到当前分支。</p>
+<h3 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h3><p>切换分支使用 <code>git checkout &lt;branch&gt;</code> ，而撤销修改则是 <code>git checkout -- &lt;file&gt;</code> ，同一命令有两种作用</p>
+<p>最新版本的 Git 提供了最新的 <code>git switch</code> 命令来切换分支：</p>
+<p>创建并切换到新的 <code>dev</code> 分支：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git switch -c dev</span><br></pre></td></tr></tbody></table></figure>
+
+<p>直接切换到已有的 <code>master</code> 分支：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git switch master</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="小结-6"><a href="#小结-6" class="headerlink" title="小结"></a>小结</h3><p>Git 鼓励大量使用分支：</p>
+<p>查看分支： <code>git branch</code></p>
+<p>创建分支： <code>git branch &lt;name&gt;</code></p>
+<p>切换分支： <code>git checkout &lt;name&gt;</code> 或者 <code>git switch &lt;name&gt;</code></p>
+<p>创建 + 切换分支： <code>git checkout -b &lt;name&gt;</code> 或者 <code>git switch -c &lt;name&gt;</code></p>
+<p>合并某分支到当前分支： <code>git merge &lt;name&gt;</code></p>
+<p>删除分支： <code>git branch -d &lt;name&gt;</code></p>
+<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><p>Git 用 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> ， <code>=======</code> ， <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> 标记出不同分支的内容</p>
+<p>用带参数的 <code>git log</code> 也可以看到分支的合并情况</p>
+<p>当 Git 无法自动合并分支时，就必须首先解决冲突。解决冲突后，再提交，合并完成。</p>
+<p>解决冲突就是把 Git 合并失败的文件手动编辑为我们希望的内容，再提交。</p>
+<p>用 <code>git log --graph</code> 命令可以看到分支合并图。</p>
+<h2 id="分支管理策略"><a href="#分支管理策略" class="headerlink" title="分支管理策略"></a>分支管理策略</h2><p>通常，合并分支时，如果可能，Git 会用 <code>Fast forward</code> 模式，但这种模式下，删除分支后，会丢掉分支信息。</p>
+<p>如果要强制禁用 <code>Fast forward</code> 模式，Git 就会在 merge 时生成一个新的 commit，这样，从分支历史上就可以看出分支信息。</p>
+<p>合并 <code>dev</code> 分支注意 <code>--no-ff</code> 参数，表示禁用 <code>Fast forward</code> ：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ git merge --no-ff -m <span class="string">"merge with no-ff"</span> dev</span><br><span class="line">Merge made by the <span class="string">'recursive'</span> strategy.</span><br><span class="line"> readme.txt | 1 +</span><br><span class="line"> 1 file changed, 1 insertion(+)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>不使用 <code>Fast forward</code> 模式，merge 后就像这样：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/no-ff.png" alt="禁用Fast forward"></p>
+<h3 id="分支策略"><a href="#分支策略" class="headerlink" title="分支策略"></a>分支策略</h3><p>在实际开发中，我们应该按照几个基本原则进行分支管理：</p>
+<p>首先， <code>master</code> 分支应该是非常稳定的，也就是仅用来发布新版本，平时不能在上面干活；</p>
+<p>干活都在 <code>dev</code> 分支上，也就是说， <code>dev</code> 分支是不稳定的，到某个时候，比如 1.0 版本发布时，再把 <code>dev</code> 分支合并到 <code>master</code> 上，在 <code>master</code> 分支发布 1.0 版本；</p>
+<p>你和你的小伙伴们每个人都在 <code>dev</code> 分支上干活，每个人都有自己的分支，时不时地往 <code>dev</code> 分支上合并就可以了。</p>
+<p>所以，团队合作的分支看起来就像这样：</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/GitAndItsApply/team.png" alt="团队合作"></p>
+<p>合并分支时，加上 <code>--no-ff</code> 参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而 <code>fast forward</code> 合并就看不出来曾经做过合并。</p>
+<p>* 注：本文摘录、整理来自<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0N5QzIwMTgvQ1MtTm90ZXMvYmxvYi9tYXN0ZXIvbm90ZXMvR2l0Lm1k"> Cs-Notes<i class="fa fa-external-link-alt"></i></span>和 [廖雪峰的官方网站</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%B7%A5%E5%85%B7/" rel="tag"># 工具</a>
+              <a href="/tags/Git/" rel="tag"># Git</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/ajax%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="prev" title="ajax 的使用">
+                  <i class="fa fa-chevron-left"></i> ajax 的使用
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" rel="next" title="两数之和">
+                  两数之和 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-edit"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LemonNeko</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","app_key":"Q52OfO4yuem0JRQtDjX1Cf2z","server_url":"server.lemonneko.cn","security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+      <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/Git%E5%B7%A5%E5%85%B7%E5%8F%8A%E5%85%B6%E4%BD%BF%E7%94%A8/",
+    }, {"enable":true,"appId":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","appKey":"Q52OfO4yuem0JRQtDjX1Cf2z","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

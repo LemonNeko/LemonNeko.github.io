@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/5.13.0/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.lemonneko.cn","root":"/","scheme":"Gemini","version":"8.0.0","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+
+  <meta name="description" content="数据库的特点 数据库是具有逻辑关系和确定含义的数据集合。逻辑上无关的数据集合不能称为数据库 数据库是针对明确的应用目标而设计、建立和加载的，并为这些用户的应用服务 数据库是对一个现实世界（如一个单位或组织）的映像，现实世界的某些改不按必须及时地反映到该数据库中来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库基础">
+<meta property="og:url" content="https://www.lemonneko.cn/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="LemonNeko的博客">
+<meta property="og:description" content="数据库的特点 数据库是具有逻辑关系和确定含义的数据集合。逻辑上无关的数据集合不能称为数据库 数据库是针对明确的应用目标而设计、建立和加载的，并为这些用户的应用服务 数据库是对一个现实世界（如一个单位或组织）的映像，现实世界的某些改不按必须及时地反映到该数据库中来">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/CourseAndStudent.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipleRelationships.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipolarityOfConnections.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipolarityOfConnections2.png">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Subclass.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/LostModification.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/DirtyRead.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Unrepeatability.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/PhantomRead.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Blockade.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/UndoLog.jpg">
+<meta property="og:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Paradigm.png">
+<meta property="article:published_time" content="2019-01-17T05:23:33.000Z">
+<meta property="article:modified_time" content="2020-04-14T04:53:07.816Z">
+<meta property="article:author" content="LemonNeko">
+<meta property="article:tag" content="基础">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/CourseAndStudent.jpg">
+
+
+<link rel="canonical" href="https://www.lemonneko.cn/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>数据库基础 | LemonNeko的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?85658a99d7ed12e83a772603fd823a67";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"] > svg a {
+  fill: blue;
+  stroke: blue;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">LemonNeko的博客</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">www.lemonneko.cn</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <section class="post-toc-wrap sidebar-panel">
+          <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">数据库的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#E-R%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">E-R 图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E7%9A%84%E4%B8%89%E7%A7%8D%E8%81%94%E7%B3%BB"><span class="nav-number">2.1.</span> <span class="nav-text">实体的三种联系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%A4%9A%E6%AC%A1%E5%87%BA%E7%8E%B0%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.2.</span> <span class="nav-text">表示多次出现的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%94%E7%B3%BB%E7%9A%84%E5%A4%9A%E5%90%91%E6%80%A7"><span class="nav-number">2.3.</span> <span class="nav-text">联系的多向性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E7%A4%BA%E5%AD%90%E7%B1%BB"><span class="nav-number">2.4.</span> <span class="nav-text">表示子类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">3.</span> <span class="nav-text">关系数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E7%9A%84%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="nav-number">3.1.</span> <span class="nav-text">关系的完整性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9E%E4%BD%93%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="nav-number">3.1.1.</span> <span class="nav-text">实体完整性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E7%85%A7%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="nav-number">3.1.2.</span> <span class="nav-text">参照完整性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E6%88%B7%E5%AE%9A%E4%B9%89%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="nav-number">3.1.3.</span> <span class="nav-text">用户定义完整性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E4%BB%A3%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">关系代数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97"><span class="nav-number">3.2.1.</span> <span class="nav-text">关系运算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-number">3.3.</span> <span class="nav-text">查询优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E4%B8%80%E8%88%AC%E5%87%86%E5%88%99"><span class="nav-number">3.3.1.</span> <span class="nav-text">查询优化的一般准则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.3.2.</span> <span class="nav-text">查询优化的步骤</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">4.2.</span> <span class="nav-text">事务的性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AUTOCOMMIT"><span class="nav-number">4.3.</span> <span class="nav-text">AUTOCOMMIT</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B6%E5%8F%91%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text">并发一致性问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E4%B8%A2%E5%A4%B1"><span class="nav-number">5.1.</span> <span class="nav-text">修改丢失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E8%84%8F%E6%95%B0%E6%8D%AE"><span class="nav-number">5.2.</span> <span class="nav-text">读脏数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">5.3.</span> <span class="nav-text">不可重复读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BB%E5%BD%B1%E8%AF%BB"><span class="nav-number">5.4.</span> <span class="nav-text">幻影读</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%81%E9%94%81"><span class="nav-number">6.</span> <span class="nav-text">封锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%81%E9%94%81%E7%B2%92%E5%BA%A6"><span class="nav-number">6.1.</span> <span class="nav-text">封锁粒度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%81%E9%94%81%E7%B1%BB%E5%9E%8B"><span class="nav-number">6.2.</span> <span class="nav-text">封锁类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E5%86%99%E9%94%81"><span class="nav-number">6.2.1.</span> <span class="nav-text">读写锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%84%8F%E5%90%91%E9%94%81"><span class="nav-number">6.2.2.</span> <span class="nav-text">意向锁</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%81%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.3.</span> <span class="nav-text">封锁协议</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E7%BA%A7%E5%B0%81%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.3.1.</span> <span class="nav-text">一级封锁协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E7%BA%A7%E5%B0%81%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.3.2.</span> <span class="nav-text">二级封锁协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E7%BA%A7%E5%B0%81%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.3.3.</span> <span class="nav-text">三级封锁协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E7%AB%AF%E9%94%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.4.</span> <span class="nav-text">两端锁协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL%E9%9A%90%E5%BC%8F%E4%B8%8E%E6%98%BE%E7%A4%BA%E9%94%81%E5%AE%9A"><span class="nav-number">6.5.</span> <span class="nav-text">MySQL 隐式与显示锁定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">7.</span> <span class="nav-text">隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AA%E6%8F%90%E4%BA%A4%E8%AF%BB%EF%BC%88READ-UNCOMMITTED%EF%BC%89"><span class="nav-number">7.1.</span> <span class="nav-text">未提交读（READ UNCOMMITTED）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E8%AF%BB%EF%BC%88READ-COMMITTED%EF%BC%89"><span class="nav-number">7.2.</span> <span class="nav-text">提交读（READ COMMITTED）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%EF%BC%88REPEATABLE-READ%EF%BC%89"><span class="nav-number">7.3.</span> <span class="nav-text">可重复读（REPEATABLE READ）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AF%E4%B8%B2%E8%A1%8C%E5%8C%96%EF%BC%88SERIALIZABLE%EF%BC%89"><span class="nav-number">7.4.</span> <span class="nav-text">可串行化（SERIALIZABLE）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%89%88%E6%9C%AC%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6"><span class="nav-number">8.</span> <span class="nav-text">多版本并发控制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E5%8F%B7"><span class="nav-number">8.1.</span> <span class="nav-text">版本号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%9A%84%E5%88%97"><span class="nav-number">8.2.</span> <span class="nav-text">隐藏的列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Undo%E6%97%A5%E5%BF%97"><span class="nav-number">8.3.</span> <span class="nav-text">Undo 日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-number">8.4.</span> <span class="nav-text">实现过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SELECT"><span class="nav-number">8.4.1.</span> <span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#INSERT"><span class="nav-number">8.4.2.</span> <span class="nav-text">INSERT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DELETE"><span class="nav-number">8.4.3.</span> <span class="nav-text">DELETE</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UPDATE"><span class="nav-number">8.4.4.</span> <span class="nav-text">UPDATE</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E8%AF%BB%E5%92%8C%E5%BD%93%E5%89%8D%E8%AF%BB"><span class="nav-number">8.5.</span> <span class="nav-text">快照读和当前读</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BF%AB%E7%85%A7%E8%AF%BB"><span class="nav-number">8.5.1.</span> <span class="nav-text">快照读</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BD%93%E5%89%8D%E8%AF%BB"><span class="nav-number">8.5.2.</span> <span class="nav-text">当前读</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Next-Key-Locks"><span class="nav-number">9.</span> <span class="nav-text">Next-Key Locks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Record-Locks"><span class="nav-number">9.1.</span> <span class="nav-text">Record Locks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Gap-Locks"><span class="nav-number">9.2.</span> <span class="nav-text">Gap Locks</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Next-Key-Locks-1"><span class="nav-number">9.3.</span> <span class="nav-text">Next-Key Locks</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E7%90%86%E8%AE%BA"><span class="nav-number">10.</span> <span class="nav-text">关系数据库设计理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E4%BE%9D%E8%B5%96"><span class="nav-number">10.1.</span> <span class="nav-text">函数依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">10.2.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8C%83%E5%BC%8F"><span class="nav-number">10.3.</span> <span class="nav-text">范式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E8%8C%83%E5%BC%8F"><span class="nav-number">10.3.1.</span> <span class="nav-text">第一范式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F"><span class="nav-number">10.3.2.</span> <span class="nav-text">第二范式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F"><span class="nav-number">10.3.3.</span> <span class="nav-text">第三范式</span></a></li></ol></li></ol></li></ol></div>
+      </section>
+      <!--/noindex-->
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">LemonNeko</p>
+  <div class="site-description" itemprop="description">「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmxlbW9ubmVrb0BxcS5jb20=" title="E-Mail → mailto:lemonneko@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+
+
+
+      </section>
+        <div class="back-to-top animated">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL0xlbW9uTmVrbw==" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.lemonneko.cn/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="LemonNeko">
+      <meta itemprop="description" content="「 将生活带给你的如柠檬的酸楚 酿成犹如柠檬汽水味般的甘甜 」">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="LemonNeko的博客">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          数据库基础
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-01-17 13:23:33" itemprop="dateCreated datePublished" datetime="2019-01-17T13:23:33+08:00">2019-01-17</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-04-14 12:53:07" itemprop="dateModified" datetime="2020-04-14T12:53:07+08:00">2020-04-14</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" class="post-meta-item leancloud_visitors" data-flag-title="数据库基础" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="数据库的特点"><a href="#数据库的特点" class="headerlink" title="数据库的特点"></a>数据库的特点</h2><ol>
+<li>数据库是具有逻辑关系和确定含义的数据集合。逻辑上无关的数据集合不能称为数据库</li>
+<li>数据库是针对明确的应用目标而设计、建立和加载的，并为这些用户的应用服务</li>
+<li>数据库是对一个现实世界（如一个单位或组织）的映像，现实世界的某些改不按必须及时地反映到该数据库中来</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="E-R图"><a href="#E-R图" class="headerlink" title="E-R图"></a>E-R 图</h2><p>Entity-Relationship，有三个组成部分：实体、属性、联系。</p>
+<p>用来进行关系型数据库系统的概念设计。</p>
+<ol>
+<li>矩形：表示实体，在矩形框内写上实体的名称</li>
+<li>菱形：表示实体间的联系，在菱形框内写上联系的名称</li>
+<li>无向边：把菱形和有关实体连接起来，在无向边的旁边标注上 1、M、N、P 等表示联系的类型</li>
+<li>椭圆形：表示实体或联系的属性，在椭圆内写上联系的名字</li>
+</ol>
+<h3 id="实体的三种联系"><a href="#实体的三种联系" class="headerlink" title="实体的三种联系"></a>实体的三种联系</h3><p>包含一对一，一对多，多对多三种。</p>
+<ul>
+<li>如果 A 到 B 是一对多关系，那么画个带箭头的线段指向 B；</li>
+<li>如果是一对一，画两个带箭头的线段；</li>
+<li>如果是多对多，画两个不带箭头的线段。</li>
+</ul>
+<p>下图的 Course 和 Student 是一对多的关系。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/CourseAndStudent.jpg" alt="Course和Student"></p>
+<h3 id="表示多次出现的关系"><a href="#表示多次出现的关系" class="headerlink" title="表示多次出现的关系"></a>表示多次出现的关系</h3><p>一个实体在联系出现几次，就要用几条线连接。</p>
+<p>下图表示一个课程的先修关系，先修关系出现两个 Course 实体，第一个是先修课程，后一个是后修课程，因此需要用两条线来表示这种关系。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipleRelationships.jpg" alt="多次出现的关系"></p>
+<h3 id="联系的多向性"><a href="#联系的多向性" class="headerlink" title="联系的多向性"></a>联系的多向性</h3><p>虽然老师可以开设多门课，并且可以教授多名学生，但是对于特定的学生和课程，只有一个老师教授，这就构成了一个三元联系。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipolarityOfConnections.png" alt="联系的多向性"></p>
+<p>一般只使用二元联系，可以把多元联系转换为二元联系。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/MultipolarityOfConnections2.png" alt="多元关系转二元关系"></p>
+<h3 id="表示子类"><a href="#表示子类" class="headerlink" title="表示子类"></a>表示子类</h3><p>用一个三角形和两条线来连接类和子类，与子类有关的属性和联系都连到子类上，而与父类和子类都有关的连到父类上。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Subclass.jpg" alt="表示子类"></p>
+<h2 id="关系数据库"><a href="#关系数据库" class="headerlink" title="关系数据库"></a>关系数据库</h2><h3 id="关系的完整性"><a href="#关系的完整性" class="headerlink" title="关系的完整性"></a>关系的完整性</h3><h4 id="实体完整性"><a href="#实体完整性" class="headerlink" title="实体完整性"></a>实体完整性</h4><p>所谓实体完整性是指关系中<strong>主码</strong>取值的约束，即<strong>主属性不能取控制</strong></p>
+<h4 id="参照完整性"><a href="#参照完整性" class="headerlink" title="参照完整性"></a>参照完整性</h4><p>所谓参照完整性规则是指<strong>外码必须是另一个表的主码的有效值</strong>，即已经存在的值，或者为控制</p>
+<h4 id="用户定义完整性"><a href="#用户定义完整性" class="headerlink" title="用户定义完整性"></a>用户定义完整性</h4><p>用户定义完整性就是针对某一具体应用的关系数据库的具体的应用需求，而对其数据进行必要的约束条件，它反映某一具体应用所涉及的数据必须满足的要求</p>
+<h3 id="关系代数"><a href="#关系代数" class="headerlink" title="关系代数"></a>关系代数</h3><h4 id="关系运算"><a href="#关系运算" class="headerlink" title="关系运算"></a>关系运算</h4><ul>
+<li>选择</li>
+<li>投影</li>
+<li>连接</li>
+<li>除</li>
+</ul>
+<h3 id="查询优化"><a href="#查询优化" class="headerlink" title="查询优化"></a>查询优化</h3><h4 id="查询优化的一般准则"><a href="#查询优化的一般准则" class="headerlink" title="查询优化的一般准则"></a>查询优化的一般准则</h4><ol>
+<li>在执行连接操作前对关系适当进行预处理。<ul>
+<li>预处理有两个方法：<ul>
+<li>索引连接法（在连接属性上建立索引，然后执行连接）</li>
+<li>排序合并法（对关系排序，然后执行连接）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>选择运算应尽可能先做，这是最重要的一条，目的是减小中间关系</li>
+<li>投影运算尽可能先做</li>
+<li>避免直接做笛卡尔积，把笛卡尔积操作之前和之后的一连串选择和投影合并起来一起做</li>
+</ol>
+<h4 id="查询优化的步骤"><a href="#查询优化的步骤" class="headerlink" title="查询优化的步骤"></a>查询优化的步骤</h4><ol>
+<li>将查询转换成某种内部表示，通常是语法树</li>
+<li>根据一定的等价变换规则把语法树转换成标准（优化）形式，即代数优化</li>
+<li>选择底层的操作算法。对于语法树中的每一个操作，计算各种执行算法的执行代价，选择代价小的执行算法，即吴丽华</li>
+<li>生成查询计划（查询执行方案），它是由一系列内部操作组成的</li>
+</ol>
+<ul>
+<li>代价模型的计算方法：<ul>
+<li>集中式数据库<ul>
+<li>集中户系统的总代价 = I/O 代价 + CPU 代价</li>
+<li>多用户系统的总代价 = I/O 代价 + CPU 代价 + 内存代价</li>
+</ul>
+</li>
+<li>分布式数据库<ul>
+<li>总代价 = I/O 代价 + CPU 代价 [+ 内存代价] + 通信代价</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>事务指的是满足 ACID 特性的一组操作，可以通过 Commit 提交一个事务，也可以使用 Rollback 进行回滚。</p>
+<h3 id="事务的性质"><a href="#事务的性质" class="headerlink" title="事务的性质"></a>事务的性质</h3><ol>
+<li><p><strong>原子性 (Atomicity)</strong></p>
+<p>事务被视为不可分割的最小单元，事务的所有操作要么全部提交成功，要么全部失败回滚。</p>
+<p>回滚可以用回滚日志来实现，回滚日志记录着事务所执行的修改操作，在回滚时反向执行这些修改操作即可。</p>
+</li>
+<li><p><strong>一致性 (Consistency)</strong></p>
+<p>数据库在事务执行前后都保持一致性状态。在一致性状态下，所有事务对一个数据的读取结果都是相同的。</p>
+</li>
+<li><p><strong>隔离性 (Isolation)</strong></p>
+<p>一个事务所做的修改在最终提交以前，对其它事务是不可见的。</p>
+</li>
+<li><p><strong>持久性 (Durability)</strong></p>
+<p>一旦事务提交，则其所做的修改将会永远保存到数据库中。即使系统发生崩溃，事务执行的结果也不能丢失。</p>
+<p>使用重做日志来保证持久性。</p>
+</li>
+</ol>
+<p>事务的 ACID 特性概念简单，但不是很好理解，主要是因为这几个特性不是一种平级关系：</p>
+<ul>
+<li>只有满足<strong>一致性</strong>，事务的执行结果才是正确的。</li>
+<li>在<strong>无并发</strong>的情况下，事务<strong>串行</strong>执行，隔离性一定能够满足。此时<strong>只要能满足原子性</strong>，就一定能满足一致性。</li>
+<li>在<strong>并发</strong>的情况下，多个事务<strong>并行</strong>执行，事务<strong>不仅要满足原子性，还需要满足隔离性</strong>，才能满足一致性。</li>
+<li>事务满足持久化是为了能应对数据库崩溃的情况。</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line">    id1(原子性)-.并发/无并发.-&gt;id3(一致性)</span><br><span class="line">    id2(隔离性)-.并发.-&gt;id3(一致性)</span><br><span class="line">    id3(一致性)-.-&gt;id4((执行结果正确))</span><br><span class="line">    id5(持久性)-.-&gt;id6((应对数据库崩溃))</span><br><span class="line">    style id1 fill:#B0DDF0</span><br><span class="line">    style id2 fill:#B0DDF0</span><br><span class="line">    style id3 fill:#B0DDF0</span><br><span class="line">    style id4 fill:#D0CEE3</span><br><span class="line">    style id5 fill:#B0DDF0</span><br><span class="line">    style id6 fill:#D0CEE3</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="AUTOCOMMIT"><a href="#AUTOCOMMIT" class="headerlink" title="AUTOCOMMIT"></a>AUTOCOMMIT</h3><p><code>MySQL</code> 默认采用自动提交模式。也就是说，如果不显式使用 <code>START TRANSACTION</code> 语句来开始一个事务，那么每个查询都会被当做一个事务自动提交。</p>
+<h2 id="并发一致性问题"><a href="#并发一致性问题" class="headerlink" title="并发一致性问题"></a>并发一致性问题</h2><h3 id="修改丢失"><a href="#修改丢失" class="headerlink" title="修改丢失"></a>修改丢失</h3><p>T1 和 T2 两个事务都对一个数据进行修改，T1 先修改，T2 随后修改，T2 的修改覆盖了 T1 的修改。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/LostModification.jpg" alt="修改丢失"></p>
+<h3 id="读脏数据"><a href="#读脏数据" class="headerlink" title="读脏数据"></a>读脏数据</h3><p>T1 修改一个数据，T2 随后读取这个数据。如果 T1 撤销了这次修改，那么 T2 读取的数据是脏数据。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/DirtyRead.jpg" alt="读脏数据"></p>
+<h3 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h3><p>T2 读取一个数据，T1 对该数据做了修改。如果 T2 再次读取这个数据，此时读取的结果和第一次读取的结果不同。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Unrepeatability.jpg" alt="不可重复读"></p>
+<h3 id="幻影读"><a href="#幻影读" class="headerlink" title="幻影读"></a>幻影读</h3><p>T1 读取某个范围的数据，T2 在这个范围内插入新的数据，T1 再次读取这个范围的数据，此时读取的结果和和第一次读取的结果不同。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/PhantomRead.jpg" alt="幻影读"></p>
+<p>产生并发不一致性问题<strong>主要原因</strong>是<strong>破坏了事务的隔离性</strong>，<strong>解决方法</strong>是<strong>通过并发控制来保证隔离性</strong>。并发控制可以通过<strong>封锁</strong>来实现，但是封锁操作需要用户自己控制，相当复杂。数据库管理系统提供了<strong>事务的隔离级别</strong>，让用户以一种更轻松的方式处理并发一致性问题。</p>
+<h2 id="封锁"><a href="#封锁" class="headerlink" title="封锁"></a>封锁</h2><h3 id="封锁粒度"><a href="#封锁粒度" class="headerlink" title="封锁粒度"></a>封锁粒度</h3><p><code>MySQL</code> 中提供了两种封锁粒度：<strong>行级锁</strong>以及<strong>表级锁</strong>。</p>
+<p>应该尽量只锁定需要修改的那部分数据，而不是所有的资源。<strong>锁定的数据量越少，发生锁争用的可能就越小，系统的并发程度就越高。</strong></p>
+<p>但是<strong>加锁需要消耗资源</strong>，锁的各种操作（包括获取锁、释放锁、以及检查锁状态）都会增加系统开销。因此<strong>封锁粒度越小，系统开销就越大。</strong></p>
+<p>在选择封锁粒度时，需要在锁开销和并发程度之间做一个权衡。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Blockade.jpg" alt="封锁"></p>
+<h3 id="封锁类型"><a href="#封锁类型" class="headerlink" title="封锁类型"></a>封锁类型</h3><h4 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h4><ul>
+<li>排它锁（Exclusive），简写为 X 锁，又称写锁。</li>
+<li>共享锁（Shared），简写为 S 锁，又称读锁。</li>
+</ul>
+<p>有以下两个规定：</p>
+<ul>
+<li>一个事务对数据对象 A 加了 X 锁，就可以对 A 进行<strong>读取和更新</strong>。加锁期间其它事务不能对 A 加任何锁。</li>
+<li>一个事务对数据对象 A 加了 S 锁，可以对 A 进行<strong>读取操作</strong>，<strong>但是不能进行更新操作</strong>。加锁期间其它事务能对 A 加 S 锁，但是不能加 X 锁。</li>
+</ul>
+<p>锁的兼容性关系如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">-</th>
+<th align="center">X</th>
+<th align="center">S</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>X</strong></td>
+<td align="center">x</td>
+<td align="center">x</td>
+</tr>
+<tr>
+<td align="center"><strong>S</strong></td>
+<td align="center">x</td>
+<td align="center">√</td>
+</tr>
+</tbody></table>
+<h4 id="意向锁"><a href="#意向锁" class="headerlink" title="意向锁"></a>意向锁</h4><p>使用意向锁（Intention Locks）可以更容易地支持多粒度封锁。</p>
+<p>在存在行级锁和表级锁的情况下，事务 T 想要对表 A 加 X 锁，就需要先检测是否有其它事务对表 A 或者表 A 中的任意一行加了锁，那么就需要对表 A 的每一行都检测一次，这是非常耗时的。</p>
+<p>意向锁在原来的 X/S 锁之上引入了 IX/IS，IX/IS 都是表锁，用来表示一个事务想要在表中的某个数据行上加 X 锁或 S 锁。有以下两个规定：</p>
+<ul>
+<li>一个事务在获得某个数据行对象的 S 锁之前，必须先获得表的 IS 锁或者更强的锁；</li>
+<li>一个事务在获得某个数据行对象的 X 锁之前，必须先获得表的 IX 锁。</li>
+</ul>
+<p>通过引入意向锁，事务 T 想要对表 A 加 X 锁，只需要先检测是否有其它事务对表 A 加了 X/IX/S/IS 锁，如果加了就表示有其它事务正在使用这个表或者表中某一行的锁，因此事务 T 加 X 锁失败。</p>
+<p>各种锁的兼容关系如下：</p>
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>X</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>X</strong></td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td><strong>IX</strong></td>
+<td>×</td>
+<td>√</td>
+<td>×</td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>S</strong></td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td><strong>IS</strong></td>
+<td>×</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+</tbody></table>
+<p>解释如下：</p>
+<ul>
+<li>任意 <code>IS/IX</code> 锁之间都是兼容的，因为它们只是表示想要对表加锁，而不是真正加锁；</li>
+<li>S 锁只与 S 锁和 IS 锁兼容，也就是说事务 T 想要对数据行加 S 锁，其它事务可以已经获得对表或者表中的行的 S 锁。</li>
+</ul>
+<h3 id="封锁协议"><a href="#封锁协议" class="headerlink" title="封锁协议"></a>封锁协议</h3><h4 id="一级封锁协议"><a href="#一级封锁协议" class="headerlink" title="一级封锁协议"></a>一级封锁协议</h4><p><strong>事务 T 要修改数据 A 时必须加 X 锁，直到 T 结束才释放锁。</strong></p>
+<p>可以<strong>解决丢失修改问题</strong>，因为不能同时有两个事务对同一个数据进行修改，那么事务的修改就不会被覆盖。</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lock-x(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>read A=20</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lock-x(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>wait</td>
+</tr>
+<tr>
+<td>write A=19</td>
+<td>.</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>.</td>
+</tr>
+<tr>
+<td>unlock-x(A)</td>
+<td>.</td>
+</tr>
+<tr>
+<td></td>
+<td>obtain</td>
+</tr>
+<tr>
+<td></td>
+<td>read A=19</td>
+</tr>
+<tr>
+<td></td>
+<td>write A=21</td>
+</tr>
+<tr>
+<td></td>
+<td>commit</td>
+</tr>
+<tr>
+<td></td>
+<td>unlock-x(A)</td>
+</tr>
+</tbody></table>
+<h4 id="二级封锁协议"><a href="#二级封锁协议" class="headerlink" title="二级封锁协议"></a>二级封锁协议</h4><p><strong>在一级的基础上，要求读取数据 A 时必须加 S 锁，读取完马上释放 S 锁。</strong></p>
+<p>可以<strong>解决读脏数据</strong>问题，因为如果一个事务在对数据 A 进行修改，根据 1 级封锁协议，会加 X 锁，那么就不能再加 S 锁了，也就是不会读入数据。</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lock-x(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>read A=20</td>
+<td></td>
+</tr>
+<tr>
+<td>write A=19</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lock-s(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>wait</td>
+</tr>
+<tr>
+<td>rollback</td>
+<td>.</td>
+</tr>
+<tr>
+<td>A=20</td>
+<td>.</td>
+</tr>
+<tr>
+<td>unlock-x(A)</td>
+<td>.</td>
+</tr>
+<tr>
+<td></td>
+<td>obtain</td>
+</tr>
+<tr>
+<td></td>
+<td>read A=20</td>
+</tr>
+<tr>
+<td></td>
+<td>unlock-s(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>commit</td>
+</tr>
+</tbody></table>
+<h4 id="三级封锁协议"><a href="#三级封锁协议" class="headerlink" title="三级封锁协议"></a>三级封锁协议</h4><p><strong>在二级的基础上，要求读取数据 A 时必须加 S 锁，直到事务结束了才能释放 S 锁。</strong></p>
+<p>可以解决不可重复读的问题，因为读 A 时，其它事务不能对 A 加 X 锁，从而避免了在读的期间数据发生改变。</p>
+<table>
+<thead>
+<tr>
+<th>T1</th>
+<th>T2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lock-s(A)</td>
+<td></td>
+</tr>
+<tr>
+<td>read A=20</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>lock-x(A)</td>
+</tr>
+<tr>
+<td></td>
+<td>wait</td>
+</tr>
+<tr>
+<td>read A=20</td>
+<td>.</td>
+</tr>
+<tr>
+<td>commit</td>
+<td>.</td>
+</tr>
+<tr>
+<td>unlock-s(A)</td>
+<td>.</td>
+</tr>
+<tr>
+<td></td>
+<td>obtain</td>
+</tr>
+<tr>
+<td></td>
+<td>read A=20</td>
+</tr>
+<tr>
+<td></td>
+<td>write A=19</td>
+</tr>
+<tr>
+<td></td>
+<td>commit</td>
+</tr>
+<tr>
+<td></td>
+<td>unlock-X(A)</td>
+</tr>
+</tbody></table>
+<h3 id="两端锁协议"><a href="#两端锁协议" class="headerlink" title="两端锁协议"></a>两端锁协议</h3><p><strong>加锁</strong>和<strong>解锁</strong>分为两个阶段进行。</p>
+<p><strong>可串行化调度是指，通过并发控制，使得并发执行的事务结果与某个串行执行的事务结果相同。</strong></p>
+<p>事务遵循两段锁协议是保证可串行化调度的充分条件。例如以下操作满足两段锁协议，它是可串行化调度。</p>
+<figure class="highlight cos"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lock</span>-<span class="keyword">x</span>(A).<span class="built_in">..lock</span>-<span class="keyword">s</span>(B).<span class="built_in">..lock</span>-<span class="keyword">s</span>(C).<span class="built_in">..unlock</span>(A).<span class="built_in">..unlock</span>(C).<span class="built_in">..unlock</span>(B)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>但不是必要条件，例如以下操作不满足两段锁协议，但是它还是可串行化调度。</p>
+<figure class="highlight cos"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">lock</span>-<span class="keyword">x</span>(A).<span class="built_in">..unlock</span>(A).<span class="built_in">..lock</span>-<span class="keyword">s</span>(B).<span class="built_in">..unlock</span>(B).<span class="built_in">..lock</span>-<span class="keyword">s</span>(C).<span class="built_in">..unlock</span>(C)</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="MySQL隐式与显示锁定"><a href="#MySQL隐式与显示锁定" class="headerlink" title="MySQL隐式与显示锁定"></a>MySQL 隐式与显示锁定</h3><p>MySQL 的 InnoDB 存储引擎采用两段锁协议，会根据隔离级别在需要的时候自动加锁，并且所有的锁都是在同一时刻被释放，这被称为隐式锁定。</p>
+<p>InnoDB 也可以使用特定的语句进行显示锁定：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">LOCK</span> <span class="keyword">In</span> <span class="keyword">SHARE</span> <span class="keyword">MODE</span>;</span><br><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><h3 id="未提交读（READ-UNCOMMITTED）"><a href="#未提交读（READ-UNCOMMITTED）" class="headerlink" title="未提交读（READ UNCOMMITTED）"></a>未提交读（READ UNCOMMITTED）</h3><p>事务中的修改，即使没有提交，对其它事务也是可见的。</p>
+<h3 id="提交读（READ-COMMITTED）"><a href="#提交读（READ-COMMITTED）" class="headerlink" title="提交读（READ COMMITTED）"></a>提交读（READ COMMITTED）</h3><p>一个事务只能读取已经提交的事务所做的修改。换句话说，一个事务所做的修改在提交之前对其它事务是不可见的。</p>
+<h3 id="可重复读（REPEATABLE-READ）"><a href="#可重复读（REPEATABLE-READ）" class="headerlink" title="可重复读（REPEATABLE READ）"></a>可重复读（REPEATABLE READ）</h3><p>保证在同一个事务中多次读取同样数据的结果是一样的。</p>
+<h3 id="可串行化（SERIALIZABLE）"><a href="#可串行化（SERIALIZABLE）" class="headerlink" title="可串行化（SERIALIZABLE）"></a>可串行化（SERIALIZABLE）</h3><p>强制事务串行执行。</p>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻影读</th>
+<th>加锁读</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>未提交读</strong></td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+</tr>
+<tr>
+<td><strong> 提交读</strong></td>
+<td> ×</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+</tr>
+<tr>
+<td><strong> 可重复读</strong></td>
+<td> ×</td>
+<td>×</td>
+<td>√</td>
+<td>×</td>
+</tr>
+<tr>
+<td><strong> 可串行化</strong></td>
+<td> ×</td>
+<td>×</td>
+<td>×</td>
+<td>√</td>
+</tr>
+</tbody></table>
+<h2 id="多版本并发控制"><a href="#多版本并发控制" class="headerlink" title="多版本并发控制"></a>多版本并发控制</h2><p>多版本并发控制（Multi-Version Concurrency Control, MVCC）是 MySQL 的 InnoDB 存储引擎实现隔离级别的一种具体方式，用于实现<strong>提交读</strong>和<strong>可重复读</strong>这两种隔离级别。<strong>而未提交读隔离级别总是读取最新的数据行，无需使用 MVCC。可串行化隔离级别需要对所有读取的行都加锁，单纯使用 MVCC 无法实现。</strong></p>
+<h3 id="版本号"><a href="#版本号" class="headerlink" title="版本号"></a>版本号</h3><ul>
+<li>系统版本号：是一个<strong>递增</strong>的数字，每开始一个新的事务，系统版本号就会自动递增。</li>
+<li>事务版本号：事务开始时的<strong>系统版本号</strong>。</li>
+</ul>
+<h3 id="隐藏的列"><a href="#隐藏的列" class="headerlink" title="隐藏的列"></a>隐藏的列</h3><p>MVCC 在每行记录后面都保存着两个隐藏的列，用来存储两个版本号：</p>
+<ul>
+<li>创建版本号：指示创建一个数据行的快照时的系统版本号；</li>
+<li>删除版本号：如果该快照的删除版本号大于当前事务版本号表示该快照有效，否则表示该快照已经被删除了。</li>
+</ul>
+<h3 id="Undo日志"><a href="#Undo日志" class="headerlink" title="Undo日志"></a>Undo 日志</h3><p>MVCC 使用到的快照存储在 Undo 日志中，该日志通过<strong>回滚指针</strong>把一个数据行（Record）的所有快照连接起来。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/UndoLog.jpg" alt="Undo日志"></p>
+<h3 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h3><p>以下实现过程针对<strong>可重复读</strong>隔离级别。</p>
+<p>当开始新一个事务时，该<strong>事务的版本</strong>号肯定会<strong>大于</strong>当前所有<strong>数据行快照</strong>的<strong>创建版本号</strong>，理解这一点很关键。</p>
+<h4 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h4><p>多个事务必须读取到同一个数据行的快照，并且这个快照是距离现在最近的一个有效快照。但是也有例外，如果有一个事务正在修改该数据行，那么它可以读取事务本身所做的修改，而不用和其它事务的读取结果一致。</p>
+<p>把没有对一个数据行做修改的事务称为 T，T 所要读取的数据行快照的创建版本号必须小于 T 的版本号，因为如果大于或者等于 T 的版本号，那么表示该数据行快照是其它事务的最新修改，因此不能去读取它。除此之外，T 所要读取的数据行快照的删除版本号必须大于 T 的版本号，因为如果小于等于 T 的版本号，那么表示该数据行快照是已经被删除的，不应该去读取它。</p>
+<h4 id="INSERT"><a href="#INSERT" class="headerlink" title="INSERT"></a>INSERT</h4><p>将当前系统版本号作为数据行快照的创建版本号。</p>
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>将当前系统版本号作为数据行快照的删除版本号。</p>
+<h4 id="UPDATE"><a href="#UPDATE" class="headerlink" title="UPDATE"></a>UPDATE</h4><p>将当前系统版本号作为更新前的数据行快照的删除版本号，并将当前系统版本号作为更新后的数据行快照的创建版本号。可以理解为先执行 DELETE 后执行 INSERT。</p>
+<h3 id="快照读和当前读"><a href="#快照读和当前读" class="headerlink" title="快照读和当前读"></a>快照读和当前读</h3><h4 id="快照读"><a href="#快照读" class="headerlink" title="快照读"></a>快照读</h4><p>使用 MVCC 读取的是快照中的数据，这样可以减少加锁所带来的开销。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> ...;</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="当前读"><a href="#当前读" class="headerlink" title="当前读"></a>当前读</h4><p>读取的是最新的数据，需要加锁。以下第一个语句需要加 S 锁，其它都需要加 X 锁。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> ? <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> ? <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">insert</span>;</span><br><span class="line"><span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">delete</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="Next-Key-Locks"><a href="#Next-Key-Locks" class="headerlink" title="Next-Key Locks"></a>Next-Key Locks</h2><p>Next-Key Locks 是 MySQL 的 InnoDB 存储引擎的一种锁实现。</p>
+<p><strong>MVCC 不能解决幻读的问题</strong>，Next-Key Locks 就是为了解决这个问题而存在的。在可重复读（REPEATABLE READ）隔离级别下，使用 MVCC + Next-Key Locks 可以解决幻读问题。</p>
+<h3 id="Record-Locks"><a href="#Record-Locks" class="headerlink" title="Record Locks"></a>Record Locks</h3><p>锁定一个记录上的<strong>索引</strong>，而不是记录本身。</p>
+<p>如果表没有设置索引，InnoDB 会自动在主键上创建隐藏的聚簇索引，因此 Record Locks 依然可以使用。</p>
+<h3 id="Gap-Locks"><a href="#Gap-Locks" class="headerlink" title="Gap Locks"></a>Gap Locks</h3><p>锁定索引之间的<strong>间隙</strong>，但是不包含索引本身。例如当一个事务执行以下语句，其它事务就不能在 t.c 中插入 15。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> c <span class="keyword">FROM</span> t <span class="keyword">WHERE</span> c <span class="keyword">BETWEEN</span> <span class="number">10</span> <span class="keyword">and</span> <span class="number">20</span> <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="Next-Key-Locks-1"><a href="#Next-Key-Locks-1" class="headerlink" title="Next-Key Locks"></a>Next-Key Locks</h3><p>它是 Record Locks 和 Gap Locks 的结合，不仅锁定一个记录上的索引，也锁定索引之间的间隙。例如一个索引包含以下值：10, 11, 13, and 20，那么就需要锁定以下区间：</p>
+<figure class="highlight angelscript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">(negative infinity, <span class="number">10</span>]</span><br><span class="line">(<span class="number">10</span>, <span class="number">11</span>]</span><br><span class="line">(<span class="number">11</span>, <span class="number">13</span>]</span><br><span class="line">(<span class="number">13</span>, <span class="number">20</span>]</span><br><span class="line">(<span class="number">20</span>, positive infinity)</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="关系数据库设计理论"><a href="#关系数据库设计理论" class="headerlink" title="关系数据库设计理论"></a>关系数据库设计理论</h2><h3 id="函数依赖"><a href="#函数依赖" class="headerlink" title="函数依赖"></a>函数依赖</h3><ul>
+<li><p>记 A-&gt;B 表示 A 函数决定 B，也可以说 B 函数依赖于 A。</p>
+<p>如果 {A1，A2，… ，An} 是关系的一个或多个属性的集合，该集合函数决定了关系的其它所有属性并且是最小的，那么该集合就称为键码。</p>
+</li>
+<li><p>对于 A-&gt;B，如果能找到 A 的真子集 A’，使得 A’-&gt; B，那么 A-&gt;B 就是部分函数依赖，否则就是完全函数依赖。</p>
+</li>
+<li><p>对于 A-&gt;B，B-&gt;C，则 A-&gt;C 是一个传递函数依赖。</p>
+</li>
+</ul>
+<h3 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h3><p>以下的学生课程关系的函数依赖为 Sno, Cname -&gt; Sname, Sdept, Mname, Grade，键码为 {Sno, Cname}。也就是说，确定学生和课程之后，就能确定其它信息。</p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Sname</th>
+<th>Sdept</th>
+<th>Mname</th>
+<th>Cname</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td> 学生 - 1</td>
+<td> 学院 - 1</td>
+<td> 院长 - 1</td>
+<td> 课程 - 1</td>
+<td>90</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 2</td>
+<td>80</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 1</td>
+<td>100</td>
+</tr>
+<tr>
+<td>3</td>
+<td> 学生 - 3</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 2</td>
+<td>95</td>
+</tr>
+</tbody></table>
+<p>不符合范式的关系，会产生很多异常，主要有以下四种异常：</p>
+<ul>
+<li>冗余数据：例如 <code>学生-2</code> 出现了两次。</li>
+<li>修改异常：修改了一个记录中的信息，但是另一个记录中相同的信息却没有被修改。</li>
+<li>删除异常：删除一个信息，那么也会丢失其它信息。例如删除了 <code>课程-1</code> 需要删除第一行和第三行，那么 <code>学生-1</code> 的信息就会丢失。</li>
+<li>插入异常：例如想要插入一个学生的信息，如果这个学生还没选课，那么就无法插入。</li>
+</ul>
+<h3 id="范式"><a href="#范式" class="headerlink" title="范式"></a>范式</h3><p>范式理论是为了解决以上提到四种异常。</p>
+<p>高级别范式的依赖于低级别的范式，1NF 是最低级别的范式。</p>
+<p><img src="https://lemonneko-1253391789.cos.ap-shanghai.myqcloud.com/hexo/DBBasics/Paradigm.png" alt="范式"></p>
+<h4 id="第一范式"><a href="#第一范式" class="headerlink" title="第一范式"></a>第一范式</h4><p><strong>属性不可分</strong></p>
+<h4 id="第二范式"><a href="#第二范式" class="headerlink" title="第二范式"></a>第二范式</h4><p><strong>每个非主属性完全函数依赖于键码。</strong></p>
+<p><strong>分解前</strong></p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Sname</th>
+<th>Sdept</th>
+<th>Mname</th>
+<th>Cname</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td> 学生 - 1</td>
+<td> 学院 - 1</td>
+<td> 院长 - 1</td>
+<td> 课程 - 1</td>
+<td>90</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 2</td>
+<td>80</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 1</td>
+<td>100</td>
+</tr>
+<tr>
+<td>3</td>
+<td> 学生 - 3</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+<td> 课程 - 2</td>
+<td>95</td>
+</tr>
+</tbody></table>
+<p>可以通过分解来满足。</p>
+<p>以上学生课程关系中，{Sno, Cname} 为键码，有如下函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sname, Sdept</li>
+<li>Sdept -&gt; Mname</li>
+<li>Sno, Cname-&gt; Grade</li>
+</ul>
+<p>Grade 完全函数依赖于键码，它没有任何冗余数据，每个学生的每门课都有特定的成绩。</p>
+<p>Sname, Sdept 和 Mname 都部分依赖于键码，当一个学生选修了多门课时，这些数据就会出现多次，造成大量冗余数据。</p>
+<p><strong>分解后</strong> </p>
+<p>关系 - 1</p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Sname</th>
+<th>Sdept</th>
+<th>Mname</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td> 学生 - 1</td>
+<td> 学院 - 1</td>
+<td> 院长 - 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+</tr>
+<tr>
+<td>3</td>
+<td> 学生 - 3</td>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+</tr>
+</tbody></table>
+<p>有以下函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sname, Sdept</li>
+<li>Sdept -&gt; Mname</li>
+</ul>
+<p>关系 - 2</p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Cname</th>
+<th>Grade</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td> 课程 - 1</td>
+<td>90</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 课程 - 2</td>
+<td>80</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 课程 - 1</td>
+<td>100</td>
+</tr>
+<tr>
+<td>3</td>
+<td> 课程 - 2</td>
+<td>95</td>
+</tr>
+</tbody></table>
+<p>有以下函数依赖：</p>
+<ul>
+<li>Sno, Cname -&gt; Grade</li>
+</ul>
+<h4 id="第三范式"><a href="#第三范式" class="headerlink" title="第三范式"></a>第三范式</h4><p><strong>非主属性不传递函数依赖于键码。</strong></p>
+<p>上面的 关系 - 1 中存在以下传递函数依赖：</p>
+<ul>
+<li>Sno -&gt; Sdept -&gt; Mname</li>
+</ul>
+<p>可以进行以下分解：</p>
+<p>关系 - 11</p>
+<table>
+<thead>
+<tr>
+<th>Sno</th>
+<th>Sname</th>
+<th>Sdept</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td> 学生 - 1</td>
+<td> 学院 - 1</td>
+</tr>
+<tr>
+<td>2</td>
+<td> 学生 - 2</td>
+<td> 学院 - 2</td>
+</tr>
+<tr>
+<td>3</td>
+<td> 学生 - 3</td>
+<td> 学院 - 2</td>
+</tr>
+</tbody></table>
+<p>关系 - 12</p>
+<table>
+<thead>
+<tr>
+<th>Sdept</th>
+<th>Mname</th>
+</tr>
+</thead>
+<tbody><tr>
+<td> 学院 - 1</td>
+<td> 院长 - 1</td>
+</tr>
+<tr>
+<td> 学院 - 2</td>
+<td> 院长 - 2</td>
+</tr>
+</tbody></table>
+<p>本文内容主要从<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0N5QzIwMTgvSW50ZXJ2aWV3LU5vdGVib29rJUU4JUJGJTk5JUU0JUI4JUFBR2l0SHViJUU0JUI4JThBJUU2JTk1JUI0JUU3JTkwJTg2JUU4JTgwJThDJUU2JTlEJUE1JUUzJTgwJTgy"> https://github.com/CyC2018/Interview-Notebook 这个 GitHub 上整理而来。<i class="fa fa-external-link-alt"></i></span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"># 基础</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="tag"># 数据库</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%E4%BD%BF%E7%94%A8Indicator-SysMonitor%E6%A3%80%E6%B5%8B%E6%98%BE%E5%8D%A1%E6%B8%A9%E5%BA%A6/" rel="prev" title="使用 Indicator SysMonitor 检测显卡温度">
+                  <i class="fa fa-chevron-left"></i> 使用 Indicator SysMonitor 检测显卡温度
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E7%89%9B%E5%AE%A2%E7%BD%91%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94Java/" rel="next" title="牛客网刷题笔记 ——Java">
+                  牛客网刷题笔记 ——Java <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+  
+  
+  
+
+
+
+      
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 2019 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-edit"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">LemonNeko</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.0/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/bookmark.js"></script>
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.init({
+      theme    : 'forest',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    }, '.mermaid');
+  }, window.mermaid);
+}
+</script>
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      const visitors = document.querySelector('.leancloud_visitors');
+      const url = decodeURI(visitors.id);
+      const title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            const counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      const visitors = document.querySelectorAll('.leancloud_visitors');
+      const entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            const target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    const { app_id, app_key, server_url } = {"enable":true,"app_id":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","app_key":"Q52OfO4yuem0JRQtDjX1Cf2z","server_url":"server.lemonneko.cn","security":true};
+    function fetchData(api_server) {
+      const Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    const api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+  
+
+  
+      <script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              const target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    const script = document.createElement('script');
+    script.src = 'https://cdn.bootcss.com/mathjax/3.0.5/es5/tex-mml-chtml.js';
+    script.defer = true;
+    document.head.appendChild(script);
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.typesetClear();
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+<script>
+NexT.utils.loadComments('#valine-comments', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/valine@1/dist/Valine.min.js', () => {
+    new Valine(Object.assign({
+      el  : '#valine-comments',
+      path: "/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%9F%BA%E7%A1%80/",
+    }, {"enable":true,"appId":"u9xtG2j9tl7xlFx5X2liiX9V-MdYXbMMI","appKey":"Q52OfO4yuem0JRQtDjX1Cf2z","placeholder":"Just go go","avatar":"mm","meta":["nick","mail","link"],"pageSize":10,"lang":null,"visitor":false,"comment_count":true,"recordIP":true,"serverURLs":null,"enableQQ":true,"requiredFields":[]}
+    ));
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
